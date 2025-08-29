@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:edupasss/components/custom_textfield.dart';
 import 'package:edupasss/components/custom_dropdownfield.dart';
+import 'package:edupasss/components/custom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -20,9 +23,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final List<DropdownMenuItem<String>> roleItems = const [
     DropdownMenuItem(value: 'Etudiant', child: Text('Étudiant')),
-    DropdownMenuItem(value: 'Enseignant', child: Text('Enseignant')),
+    DropdownMenuItem(value: 'Formateur', child: Text('Formateur')),
     DropdownMenuItem(value: 'Administrateur', child: Text('Administrateur')),
   ];
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +47,16 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Align(
+                  Align(
                     alignment: Alignment.centerLeft,
-                    child: Icon(Icons.arrow_back, color: Colors.blue),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.blue),
+                      onPressed: () => Navigator.pushNamed(context, '/'),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Creer un compte',
+                    'Créer un compte',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -62,6 +70,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     hintText: 'Nom',
                     icon: Icons.person,
                     controller: nameController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer votre nom';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
 
@@ -71,6 +85,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     icon: Icons.email,
                     keyboardType: TextInputType.emailAddress,
                     controller: emailController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer votre email';
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return 'Email invalide';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
 
@@ -80,6 +103,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     icon: Icons.lock,
                     obscureText: true,
                     controller: passwordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer votre mot de passe';
+                      }
+                      if (value.length < 6) {
+                        return 'Le mot de passe doit avoir au moins 6 caractères';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
 
@@ -89,6 +121,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     icon: Icons.lock_outline,
                     obscureText: true,
                     controller: confirmPasswordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez confirmer votre mot de passe';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
 
@@ -108,26 +146,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 24),
 
                   // Bouton d'inscription
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _handleSubmit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: blueColor,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        'Creer un compte',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.1,
-                        ),
-                      ),
-                    ),
+                  CustomButton(
+                    text: 'Créer un compte',
+                    onPressed: _handleSubmit,
+                    isLoading: isLoading,
+                    backgroundColor: blueColor,
                   ),
                 ],
               ),
@@ -138,7 +161,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       if (selectedRole == null) {
         _showSnackBar('Veuillez sélectionner un rôle.');
@@ -148,9 +171,40 @@ class _RegisterPageState extends State<RegisterPage> {
         _showSnackBar('Les mots de passe ne correspondent pas.');
         return;
       }
-      _showSnackBar('Inscription réussie !', success: true);
+
+      setState(() => isLoading = true);
+
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+
+        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+          'name': nameController.text.trim(),
+          'email': emailController.text.trim(),
+          'role': selectedRole,
+          'createdAt': Timestamp.now(),
+        });
+
+        _showSnackBar('Inscription réussie !', success: true);
+        Navigator.pushReplacementNamed(context, '/login');
+      } on FirebaseAuthException catch (e) {
+        String message = 'Erreur inconnue';
+        if (e.code == 'weak-password') {
+          message = 'Le mot de passe est trop faible.';
+        } else if (e.code == 'email-already-in-use') {
+          message = 'Cet email est déjà utilisé.';
+        } else if (e.code == 'invalid-email') {
+          message = 'Email invalide.';
+        }
+        _showSnackBar(message);
+      } finally {
+        setState(() => isLoading = false);
+      }
     }
   }
+
   void _showSnackBar(String message, {bool success = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -161,4 +215,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-

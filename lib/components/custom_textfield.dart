@@ -6,6 +6,7 @@ class CustomTextfield extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final TextEditingController? controller;
+  final String? Function(String?)? validator; // Ajout du validator
 
   const CustomTextfield({
     Key? key,
@@ -14,7 +15,8 @@ class CustomTextfield extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.controller,
-    }) :super(key: key);
+    this.validator, // Ajout au constructeur
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class CustomTextfield extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
       ),
-      validator: (value) {
+      validator: validator ?? (value) {
         if (value == null || value.isEmpty) {
           return 'Ce champ est requis';
         }

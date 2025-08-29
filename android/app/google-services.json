@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "599314675360",
+    "project_id": "edupass-9e2ba",
+    "storage_bucket": "edupass-9e2ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599314675360:android:4733572c6ceb28ce9b7bc5",
+        "android_client_info": {
+          "package_name": "com.example.edupass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599314675360-t5mjdgq2agf6jqd4v7kk999775iuogf4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2vDCf7OwyGguFxvgUfNxMfqh4WfTQwGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599314675360-t5mjdgq2agf6jqd4v7kk999775iuogf4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599314675360:android:3379f529cca89ae89b7bc5",
+        "android_client_info": {
+          "package_name": "com.example.edupasss"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599314675360-t5mjdgq2agf6jqd4v7kk999775iuogf4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2vDCf7OwyGguFxvgUfNxMfqh4WfTQwGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599314675360-t5mjdgq2agf6jqd4v7kk999775iuogf4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

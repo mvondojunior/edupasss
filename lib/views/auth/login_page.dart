@@ -1,7 +1,8 @@
-import 'package:edupasss/views/auth/register_page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:edupasss/components/custom_button.dart';
 import 'package:edupasss/components/custom_textfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,145 +20,151 @@ class _LoginPageState extends State<LoginPage> {
 
   bool isLoading = false;
 
-  void handleLogin() {
-    setState(() => isLoading = true);
-    Future.delayed(const Duration(seconds: 2),(){
-      setState(() => isLoading = false);
-      Navigator.pushReplacementNamed(context, '/home');
+  Future<void> _handleEmailLogin() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => isLoading = true);
 
-    });
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (userDoc.exists) {
+          Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+          String role = userData['role'];
+
+          if (role == 'Etudiant') {
+            Navigator.pushReplacementNamed(context, '/student_dashboard');
+          } else if (role == 'Formateur') {
+            Navigator.pushReplacementNamed(context, '/teacher_dashboard');
+          } else if (role == 'Administrateur') {
+            Navigator.pushReplacementNamed(context, '/admin_dashboard');
+          }
+          _showSnackBar('Connexion réussie !', success: true);
+        } else {
+          _showSnackBar('Utilisateur non trouvé.');
+        }
+      } on FirebaseAuthException catch (e) {
+        String message = 'Erreur inconnue';
+        if (e.code == 'user-not-found') {
+          message = 'Utilisateur non trouvé.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Mot de passe incorrect.';
+        } else if (e.code == 'invalid-email') {
+          message = 'Email invalide.';
+        }
+        _showSnackBar(message);
+      } finally {
+        setState(() => isLoading = false);
+      }
+    }
+  }
+
+  void _showSnackBar(String message, {bool success = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: success ? Colors.green : Colors.redAccent,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: blueColor,
-        body: Center(
+      backgroundColor: blueColor,
+      body: Center(
         child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-    ),
-    child: Form(
-        key: _formKey,
-    child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Align(
-        alignment: Alignment.centerLeft,
-    child: Icon(Icons.arrow_back, color: Colors.blue),
-    ),
-          const SizedBox(height: 16),
-          Text(
-            'Se connecter',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: blueColor,
+          padding: const EdgeInsets.all(24),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
-          const SizedBox(height: 24),
-          CustomTextfield(
-            hintText: 'Email',
-            icon: Icons.email,
-            keyboardType: TextInputType.emailAddress,
-            controller: emailController,
-          ),
-          const SizedBox(height: 16
-          ),
-          CustomTextfield(
-            hintText: 'Mot de passe',
-            icon: Icons.lock,
-            obscureText: true,
-            controller: passwordController,
-          ),
-          const SizedBox(height: 24
-            ),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterPage()
-                ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: blueColor,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Se connecter',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.1,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16
-            ,),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: handleLogin,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white, // Fond blanc pour ressembler à un bouton Google
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: Colors.grey), // Bord gris léger
-                ),
-              ),
-              child: Row(
+            child: Form(
+              key: _formKey,
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/google.png', // Assure-toi d’avoir ce fichier dans ton dossier assets
-                    height: 24.0,
-                    width: 24.0,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.blue),
+                      onPressed: () => Navigator.pushNamed(context, '/'),
+                    ),
                   ),
-                  const SizedBox(width: 12), // Espace entre le logo et le texte
-                  const Text(
-                    'Continuer avec Google',
+                  const SizedBox(height: 16),
+                  Text(
+                    'Se connecter',
                     style: TextStyle(
-                      color: Colors.black87,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
+                      color: blueColor,
+                    ),
+                  ),
+                  const SizedBox(height: 24
+                  ),
+                  CustomTextfield(
+                    hintText: 'Email',
+                    icon: Icons.email,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: emailController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer votre email';
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return 'Email invalide';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16
+                  ),
+                  CustomTextfield(
+                    hintText: 'Mot de passe',
+                    icon: Icons.lock,
+                    obscureText: true,
+                    controller: passwordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer votre mot de passe';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24
+                  ),
+                  CustomButton(
+                    text: 'Se connecter',
+                    onPressed: _handleEmailLogin,
+                    isLoading: isLoading,
+                    backgroundColor: blueColor,
+                  ),
+                  const SizedBox(height: 16
+                  ),
+                  const Text('Vous n\'avez pas de compte ?', style: TextStyle(fontSize: 14)),
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, '/register'),
+                    child: const Text(
+                      'Créer un compte',
+                      style: TextStyle(color: Colors.blue, fontSize: 14),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16
-            ),
-          Text('Vous n\'avez pas de compte ?',style: TextStyle(fontSize: 14),
-          ),
-          GestureDetector(
-            onTap: (){
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context)=> RegisterPage()
-                ),
-              );
-            },
-            child: Text('Creer un compte',
-              style: TextStyle(color: Colors.blue,fontSize: 14),
-            ),
-          ),
-    ])
-    )
-    )
-        )
-    )
+        ),
+      ),
     );
   }
 }
-
