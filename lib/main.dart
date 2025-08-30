@@ -1,6 +1,7 @@
 import 'package:edupasss/views/auth/login_page.dart';
 import 'package:edupasss/views/auth/register_page.dart';
 import 'package:edupasss/views/home/landing_page.dart';
+import 'package:edupasss/views/userscreen/student/chat_bot.dart';
 import 'package:edupasss/views/userscreen/student/profile_page.dart';
 import 'package:edupasss/views/userscreen/student/student_dashboard.dart';
 import 'package:edupasss/views/userscreen/student/student_dashboard.dart';
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => RegisterPage(),
         '/student_dashboard': (context) => StudentDashboard(),
+        '/chatbot': (context) => ChatBot(),
+
       },
     );
   }
