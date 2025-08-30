@@ -17,7 +17,7 @@ class _ChatBotState extends State<ChatBot> {
   bool _isLoading = false;
 
   // 🔐 Mets ici ta clé API Gemini
-  final String _apiKey = 'AIzaSyC2vDCf7OwyGguFxvgUfNxMfqh4WfTQwGY';
+  final String _apiKey = 'AIzaSyBSFtrAW5__2QyjnX0izWsol_QJFxjuyyU';
 
   late final GenerativeModel _model;
   late final ChatSession _chat;
@@ -26,7 +26,8 @@ class _ChatBotState extends State<ChatBot> {
   void initState() {
     super.initState();
     _model = GenerativeModel(
-      model: 'gemini-pro',
+      // ✅ Corrigé : utilise un modèle existant
+      model: 'gemini-1.5-flash-latest',
       apiKey: _apiKey,
     );
     _chat = _model.startChat();
