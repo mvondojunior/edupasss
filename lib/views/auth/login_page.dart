@@ -25,7 +25,8 @@ class _LoginPageState extends State<LoginPage> {
       setState(() => isLoading = true);
 
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
@@ -36,7 +37,8 @@ class _LoginPageState extends State<LoginPage> {
             .get();
 
         if (userDoc.exists) {
-          Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+          Map<String, dynamic> userData =
+          userDoc.data() as Map<String, dynamic>;
           String role = userData['role'];
 
           if (role == 'Etudiant') {
@@ -51,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
           _showSnackBar('Utilisateur non trouvé.');
         }
       } on FirebaseAuthException catch (e) {
-        String message = 'Erreur inconnue';
+        String message = 'Erreur de connexion';
         if (e.code == 'user-not-found') {
           message = 'Utilisateur non trouvé.';
         } else if (e.code == 'wrong-password') {
@@ -110,8 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                       color: blueColor,
                     ),
                   ),
-                  const SizedBox(height: 24
-                  ),
+                  const SizedBox(height: 24),
                   CustomTextfield(
                     hintText: 'Email',
                     icon: Icons.email,
@@ -127,8 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16
-                  ),
+                  const SizedBox(height: 16),
                   CustomTextfield(
                     hintText: 'Mot de passe',
                     icon: Icons.lock,
@@ -141,23 +141,38 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 24
-                  ),
+                  const SizedBox(height: 24),
                   CustomButton(
                     text: 'Se connecter',
                     onPressed: _handleEmailLogin,
                     isLoading: isLoading,
                     backgroundColor: blueColor,
                   ),
-                  const SizedBox(height: 16
-                  ),
-                  const Text('Vous n\'avez pas de compte ?', style: TextStyle(fontSize: 14)),
-                  GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/register'),
-                    child: const Text(
-                      'Créer un compte',
-                      style: TextStyle(color: Colors.blue, fontSize: 14),
-                    ),
+                  const SizedBox(height: 24),
+
+                  // --- Section inscription ---
+                  Column(
+                    children: [
+                      Text(
+                        "Vous n'avez pas de compte ?",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, '/register'),
+                        child: Text(
+                          "Créer un compte",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: blueColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

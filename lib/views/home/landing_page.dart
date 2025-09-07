@@ -1,7 +1,5 @@
 import 'package:edupasss/views/auth/login_page.dart';
-import 'package:edupasss/views/auth/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -9,32 +7,39 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageScreenState extends State<LandingPage> {
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
   int currentIndex = 0;
 
-  List<Map<String, String>> onboardingData = [
+  final List<Map<String, String>> onboardingData = [
     {
       "image": "assets/images/learn.png",
       "title": "E-Learning",
+      "subtitle": "Apprenez à tout moment et en tout lieu"
     },
     {
       "image": "assets/images/etudiant.png",
       "title": "Apprenants",
+      "subtitle": "Développez vos compétences efficacement"
     },
     {
       "image": "assets/images/encadrant.png",
-      "title": "Professeurs",
+      "title": "Formateurs",
+      "subtitle": "Partagez vos connaissances simplement"
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+
+      // --- AppBar avec EDUPASS centré + bouton Passer ---
       appBar: AppBar(
         backgroundColor: Color(0xFF3B82F6),
+        elevation: 4,
         centerTitle: true,
         title: const Text(
-          'EDUPASS',
+          "EDUPASS",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -42,9 +47,27 @@ class _LandingPageScreenState extends State<LandingPage> {
             color: Colors.white,
           ),
         ),
-        elevation: 4,
+        actions: [
+          if (currentIndex < onboardingData.length - 1)
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              child: Text(
+                "Passer",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+        ],
       ),
-      backgroundColor: Colors.white,
+
       body: SafeArea(
         child: Column(
           children: [
@@ -52,9 +75,7 @@ class _LandingPageScreenState extends State<LandingPage> {
               child: PageView.builder(
                 controller: _controller,
                 onPageChanged: (index) {
-                  setState(() {
-                    currentIndex = index;
-                  });
+                  setState(() => currentIndex = index);
                 },
                 itemCount: onboardingData.length,
                 itemBuilder: (context, index) {
@@ -63,15 +84,25 @@ class _LandingPageScreenState extends State<LandingPage> {
                     children: [
                       Image.asset(
                         onboardingData[index]['image']!,
-                        height: 300,
+                        height: 250,
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 40),
                       Text(
                         onboardingData[index]['title']!,
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        onboardingData[index]['subtitle']!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                          height: 1.4,
                         ),
                       ),
                     ],
@@ -80,7 +111,7 @@ class _LandingPageScreenState extends State<LandingPage> {
               ),
             ),
 
-            // Page indicators
+            // --- Indicateurs de page ---
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(onboardingData.length, (index) {
@@ -90,7 +121,9 @@ class _LandingPageScreenState extends State<LandingPage> {
                   height: 8,
                   width: currentIndex == index ? 24 : 8,
                   decoration: BoxDecoration(
-                    color: currentIndex == index ? Colors.blue : Colors.grey[300],
+                    color: currentIndex == index
+                        ? Colors.blue[700]
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );
@@ -99,27 +132,36 @@ class _LandingPageScreenState extends State<LandingPage> {
 
             SizedBox(height: 40),
 
-            // Get Started Button
-            currentIndex == onboardingData.length - 1
-                ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 58.0, vertical: 20.0),
+            // --- Bouton COMMENCER / SUIVANT ---
+            Padding(
+              padding:
+              const EdgeInsets.symmetric(horizontal: 58.0, vertical: 20.0),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) =>  LoginPage()
-                    ),
-                  );
+                  if (currentIndex == onboardingData.length - 1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  } else {
+                    _controller.nextPage(
+                      duration: Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 56),
                   backgroundColor: Colors.blue[700],
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // Plus arrondi
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  elevation: 4,
+                  elevation: 6,
                 ),
                 child: Text(
-                  'COMMENCER',
+                  currentIndex == onboardingData.length - 1
+                      ? 'COMMENCER'
+                      : 'SUIVANT',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -128,8 +170,7 @@ class _LandingPageScreenState extends State<LandingPage> {
                   ),
                 ),
               ),
-            )
-             : SizedBox(height: 80),
+            ),
           ],
         ),
       ),
