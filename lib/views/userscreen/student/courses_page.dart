@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,40 +19,16 @@ class _CoursesPageState extends State<CoursesPage>
 
   final Map<String, List<Map<String, String>>> _coursesByCategory = {
     "Maths": [
-      {
-        "title": "Algèbre linéaire",
-        "pdfUrl":
-        "https://example.com/algebre.pdf"
-      },
-      {
-        "title": "Analyse",
-        "pdfUrl":
-        "https://example.com/analyse.pdf"
-      },
+      {"title": "Algèbre linéaire", "pdfUrl": "https://example.com/algebre.pdf"},
+      {"title": "Analyse", "pdfUrl": "https://example.com/analyse.pdf"},
     ],
     "Physique": [
-      {
-        "title": "Mécanique classique",
-        "pdfUrl":
-        "https://example.com/mecanique.pdf"
-      },
-      {
-        "title": "Optique",
-        "pdfUrl":
-        "https://example.com/optique.pdf"
-      },
+      {"title": "Mécanique classique", "pdfUrl": "https://example.com/mecanique.pdf"},
+      {"title": "Optique", "pdfUrl": "https://example.com/optique.pdf"},
     ],
     "Informatique": [
-      {
-        "title": "Programmation Dart",
-        "pdfUrl":
-        "https://example.com/dart.pdf"
-      },
-      {
-        "title": "Bases de données",
-        "pdfUrl":
-        "https://example.com/bdd.pdf"
-      },
+      {"title": "Programmation Dart", "pdfUrl": "https://example.com/dart.pdf"},
+      {"title": "Bases de données", "pdfUrl": "https://example.com/bdd.pdf"},
     ],
   };
 
@@ -68,15 +43,12 @@ class _CoursesPageState extends State<CoursesPage>
 
   Future<void> _downloadAndOpenPdf(String url, String fileName) async {
     try {
-      // Demande de permission
       if (await Permission.storage.request().isGranted) {
         final dir = await getApplicationDocumentsDirectory();
         final filePath = "${dir.path}/$fileName.pdf";
 
-        // Téléchargement
         await _dio.download(url, filePath);
 
-        // Ouvrir le fichier
         OpenFile.open(filePath);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -92,7 +64,8 @@ class _CoursesPageState extends State<CoursesPage>
 
   @override
   Widget build(BuildContext context) {
-    final Color blueColor = const Color(0xFF3B82F6);
+    // 🔹 Bleu royal harmonisé avec le dashboard
+    final Color blueColor = const Color(0xFF365DA8);
 
     return DefaultTabController(
       length: _coursesByCategory.keys.length,
@@ -127,11 +100,18 @@ class _CoursesPageState extends State<CoursesPage>
                   ),
                   child: ListTile(
                     leading: CircleAvatar(
+                      radius: 24,
                       backgroundColor: blueColor.withOpacity(0.1),
                       child: Icon(Icons.picture_as_pdf, color: blueColor),
                     ),
-                    title: Text(course["title"]!),
-                    subtitle: Text("Télécharger le cours"),
+                    title: Text(
+                      course["title"]!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: blueColor,
+                      ),
+                    ),
+                    subtitle: const Text("Télécharger le cours"),
                     trailing: IconButton(
                       icon: const Icon(Icons.download),
                       color: blueColor,

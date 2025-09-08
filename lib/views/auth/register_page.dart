@@ -11,7 +11,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final Color blueColor = const Color(0xFF3B82F6);
+  final Color appBlue = const Color(0xFF365DA8); // 👈 ton bleu royal
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
@@ -22,7 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String? selectedRole;
 
   final List<DropdownMenuItem<String>> roleItems = const [
-    DropdownMenuItem(value: 'Etudiant', child: Text('Étudiant')),
+    DropdownMenuItem(value: 'Etudiant', child: Text('Etudiant')),
     DropdownMenuItem(value: 'Formateur', child: Text('Formateur')),
     DropdownMenuItem(value: 'Administrateur', child: Text('Administrateur')),
   ];
@@ -32,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: blueColor,
+      backgroundColor: appBlue, // 👈 couleur de fond
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.blue),
+                      icon: Icon(Icons.arrow_back, color: appBlue), // 👈 bleu royal
                       onPressed: () => Navigator.pushNamed(context, '/'),
                     ),
                   ),
@@ -60,7 +60,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: blueColor,
+                      color: appBlue, // 👈 bleu royal
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -150,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     text: 'Créer un compte',
                     onPressed: _handleSubmit,
                     isLoading: isLoading,
-                    backgroundColor: blueColor,
+                    backgroundColor: appBlue, // 👈 bleu royal
                   ),
                 ],
               ),

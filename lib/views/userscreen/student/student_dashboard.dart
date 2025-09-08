@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:edupasss/components/custom_navigation_student.dart';
 
-
-
 class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key});
 
@@ -17,9 +15,10 @@ class StudentDashboard extends StatefulWidget {
 }
 
 class _StudentDashboardState extends State<StudentDashboard> {
-  final Color blueColor = const Color(0xFF3B82F6);
-  int _currentIndex = 0;
+  // 🔹 Bleu royal harmonisé
+  final Color blueColor = const Color(0xFF365DA8);
 
+  int _currentIndex = 0;
   final List<Widget> _pages = [];
 
   @override
@@ -28,8 +27,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
     _pages.addAll([
       _buildHomePage(),
       CoursesPage(),
-       QuizPage(),
-       TutorialsPage(),
+      QuizPage(),
+      TutorialsPage(),
       ProfilePage(),
     ]);
   }
@@ -50,7 +49,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
             MaterialPageRoute(builder: (_) => const ChatBot()),
           );
         },
-        child: const Icon(Icons.chat),
+        child: const Icon(Icons.chat, color: Colors.white),
         tooltip: 'Assistant IA',
       )
           : null,
@@ -76,23 +75,23 @@ class _StudentDashboardState extends State<StudentDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
+          // 🔹 Header
           Text(
             'Bienvenue ',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
           const SizedBox(height: 8),
-          Text(
+          const Text(
             'Faites le plein de connaissances',
             style: TextStyle(fontSize: 16, color: Colors.white70),
           ),
           const SizedBox(height: 24),
 
-          // Container blanc avec options
+          // 🔹 Container blanc avec options
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -166,15 +165,16 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: blueColor, // 🔹 titres en bleu royal
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
+                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),

@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
         '/student_dashboard': (context) => StudentDashboard(),
         '/chatbot': (context) => ChatBot(),
         // On passe toggleTheme au ProfilePage
-        '/profile': (context) => ProfilePage(onThemeChanged: toggleTheme),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }

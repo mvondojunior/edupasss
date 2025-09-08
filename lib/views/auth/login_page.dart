@@ -12,7 +12,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final Color blueColor = const Color(0xFF3B82F6);
+  // --- Bleu royal utilisé partout ---
+  final Color blueColor = const Color(0xFF365DA8);
+
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController emailController = TextEditingController();
@@ -81,7 +83,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: blueColor,
+      backgroundColor: blueColor, // 🔹 fond bleu royal
+
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -90,26 +93,26 @@ class _LoginPageState extends State<LoginPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                  offset: Offset(0, 4),
+                ),
+              ],
             ),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.blue),
-                      onPressed: () => Navigator.pushNamed(context, '/'),
-                    ),
-                  ),
                   const SizedBox(height: 16),
                   Text(
                     'Se connecter',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: blueColor,
+                      color: blueColor, // 🔹 titre en bleu royal
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -146,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                     text: 'Se connecter',
                     onPressed: _handleEmailLogin,
                     isLoading: isLoading,
-                    backgroundColor: blueColor,
+                    backgroundColor: blueColor, // 🔹 bouton bleu royal
                   ),
                   const SizedBox(height: 24),
 
@@ -168,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: blueColor,
+                            color: blueColor, // 🔹 lien bleu royal
                           ),
                         ),
                       ),
