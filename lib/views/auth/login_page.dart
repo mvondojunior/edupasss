@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
           if (role == 'Etudiant') {
             Navigator.pushReplacementNamed(context, '/student_dashboard');
           } else if (role == 'Formateur') {
-            Navigator.pushReplacementNamed(context, '/teacher_dashboard');
+            Navigator.pushReplacementNamed(context, '/advisor_dashboard');
           } else if (role == 'Administrateur') {
             Navigator.pushReplacementNamed(context, '/admin_dashboard');
           }

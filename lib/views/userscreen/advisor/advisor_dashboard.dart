@@ -15,7 +15,7 @@ class _AdvisorDashboardState extends State<AdvisorDashboard> {
   Future<int> _getStudentCount() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('users')
-        .where('role', isEqualTo: 'Etudiant')
+        .where('role', isEqualTo: 'Apprenant')
         .get();
     return snapshot.docs.length;
   }
@@ -62,7 +62,7 @@ class _AdvisorDashboardState extends State<AdvisorDashboard> {
                 ),
                 child: Column(
                   children: [
-                    // Nombre d’apprenants
+
                     FutureBuilder<int>(
                       future: _getStudentCount(),
                       builder: (context, snapshot) {
@@ -109,7 +109,7 @@ class _AdvisorDashboardState extends State<AdvisorDashboard> {
                         ),
                         _buildQuickAction(
                           icon: Icons.person,
-                          label: "Profil",
+                          label: "Profil Apprenants",
                           color: Colors.green,
                           onTap: () => _goTo(context, "/profile"),
                         ),

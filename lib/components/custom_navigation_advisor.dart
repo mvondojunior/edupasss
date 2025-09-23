@@ -1,3 +1,4 @@
+import 'package:edupasss/views/userscreen/advisor/announcement.dart';
 import 'package:flutter/material.dart';
 import 'package:edupasss/views/userscreen/advisor/advisor_dashboard.dart';
 import 'package:edupasss/views/userscreen/advisor/courses_manage.dart';
@@ -18,6 +19,7 @@ class _CustomNavigationAdvisorState extends State<CustomNavigationAdvisor> {
     AdvisorDashboard(),
     coursesmanage(),
     profilepage(),
+    Announcement(),
   ];
 
   @override
@@ -33,6 +35,7 @@ class _CustomNavigationAdvisorState extends State<CustomNavigationAdvisor> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil"),
           BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: "Cours"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
+          BottomNavigationBarItem(icon: Icon(Icons.announcement), label: "Annonce"),
         ],
       ),
     );
