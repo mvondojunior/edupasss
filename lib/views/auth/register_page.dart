@@ -22,7 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String? selectedRole;
 
   final List<DropdownMenuItem<String>> roleItems = const [
-    DropdownMenuItem(value: 'Etudiant', child: Text('Etudiant')),
+    DropdownMenuItem(value: 'Apprenant', child: Text('Apprenant')),
     DropdownMenuItem(value: 'Formateur', child: Text('Formateur')),
     DropdownMenuItem(value: 'Administrateur', child: Text('Administrateur')),
   ];
@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: appBlue), // 👈 bleu royal
+                      icon: Icon(Icons.arrow_back, color: appBlue),
                       onPressed: () => Navigator.pushNamed(context, '/'),
                     ),
                   ),
@@ -60,7 +60,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: appBlue, // 👈 bleu royal
+                      color: appBlue,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -150,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     text: 'Créer un compte',
                     onPressed: _handleSubmit,
                     isLoading: isLoading,
-                    backgroundColor: appBlue, // 👈 bleu royal
+                    backgroundColor: appBlue,
                   ),
                 ],
               ),

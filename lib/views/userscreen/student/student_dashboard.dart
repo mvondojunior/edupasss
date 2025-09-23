@@ -15,7 +15,6 @@ class StudentDashboard extends StatefulWidget {
 }
 
 class _StudentDashboardState extends State<StudentDashboard> {
-  // 🔹 Bleu royal harmonisé
   final Color blueColor = const Color(0xFF365DA8);
 
   int _currentIndex = 0;

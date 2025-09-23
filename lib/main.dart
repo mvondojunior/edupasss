@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.black,
       ),
-      themeMode: _themeMode, // 🔥 bascule entre clair/sombre
+      themeMode: _themeMode,
 
       initialRoute: '/',
       routes: {
