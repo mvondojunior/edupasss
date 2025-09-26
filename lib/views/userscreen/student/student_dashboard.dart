@@ -4,8 +4,6 @@ import 'package:edupasss/views/userscreen/student/profile_page.dart';
 import 'package:edupasss/views/userscreen/student/quiz_page.dart';
 import 'package:edupasss/views/userscreen/student/tutorials_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:edupasss/components/custom_navigation_student.dart';
 
 class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key});
@@ -35,6 +33,20 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _currentIndex == 0
+          ? AppBar(
+        backgroundColor: blueColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.person, color: Colors.white),
+          onPressed: () => setState(() => _currentIndex = 4),
+        ),
+        title: const Text(
+          "Tableau de bord",
+          style: TextStyle(color: Colors.white),
+        ),
+      )
+          : null,
       backgroundColor: blueColor,
       body: SafeArea(
         child: _pages[_currentIndex],
@@ -60,8 +72,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Cours'),
-          BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
-          BottomNavigationBarItem(icon: Icon(Icons.play_circle_fill), label: 'Tutoriels'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.play_circle_fill), label: 'Tutoriels'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
       ),
@@ -74,115 +86,92 @@ class _StudentDashboardState extends State<StudentDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 Header
-          Text(
-            'Bienvenue ',
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+          // 🔹 Progression de l’apprenant
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
               color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Faites le plein de connaissances',
-            style: TextStyle(fontSize: 16, color: Colors.white70),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Votre progression",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+                LinearProgressIndicator(
+                  value: 0.6, // exemple 60%
+                  backgroundColor: Colors.grey[300],
+                  color: blueColor,
+                  minHeight: 8,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                const SizedBox(height: 8),
+                const Text("60% complété",
+                    style: TextStyle(color: Colors.grey)),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
 
-          // 🔹 Container blanc avec options
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                _buildTile(
-                  icon: Icons.school,
-                  title: 'Cours',
-                  subtitle: 'Découvrez vos cours',
-                  onTap: () => setState(() => _currentIndex = 1),
-                ),
-                const SizedBox(height: 16),
-                _buildTile(
-                  icon: Icons.quiz,
-                  title: 'Quiz',
-                  subtitle: 'Testez vos connaissances',
-                  onTap: () => setState(() => _currentIndex = 2),
-                ),
-                const SizedBox(height: 16),
-                _buildTile(
-                  icon: Icons.play_circle_filled,
-                  title: 'Tutoriels',
-                  subtitle: 'Vidéos explicatives',
-                  onTap: () => setState(() => _currentIndex = 3),
-                ),
-                const SizedBox(height: 16),
-                _buildTile(
-                  icon: Icons.person,
-                  title: 'Profil',
-                  subtitle: 'Gérez votre compte',
-                  onTap: () => setState(() => _currentIndex = 4),
-                ),
-              ],
-            ),
+          // 🔹 Row raccourcis (Cours + Tutoriels)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildShortcut(
+                icon: Icons.school,
+                title: "Cours",
+                onTap: () => setState(() => _currentIndex = 1),
+              ),
+              _buildShortcut(
+                icon: Icons.play_circle_fill,
+                title: "Tutoriels",
+                onTap: () => setState(() => _currentIndex = 3),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTile({
+  Widget _buildShortcut({
     required IconData icon,
     required String title,
-    required String subtitle,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(15),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: blueColor.withOpacity(0.05),
-          border: Border.all(color: blueColor.withOpacity(0.2)),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: blueColor.withOpacity(0.1),
-              child: Icon(icon, color: blueColor),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: blueColor, // 🔹 titres en bleu royal
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                   Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6,
+                offset: const Offset(0, 4),
               ),
-            ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-          ],
+            ],
+          ),
+          child: Column(
+            children: [
+              Icon(icon, color: blueColor, size: 32),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: blueColor),
+              ),
+            ],
+          ),
         ),
       ),
     );

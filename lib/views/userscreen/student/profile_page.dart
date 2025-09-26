@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -8,8 +10,39 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // 🔹 Bleu royal harmonisé avec le dashboard
   final Color blueColor = const Color(0xFF365DA8);
+
+  Map<String, dynamic>? userData;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (doc.exists) {
+          setState(() {
+            userData = doc.data() as Map<String, dynamic>;
+            isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      print("Erreur chargement profil: $e");
+      setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +53,11 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: blueColor,
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : userData == null
+          ? const Center(child: Text("Impossible de charger les infos"))
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 16),
             Center(
               child: Text(
-                'Mvondo Pierre',
+                userData!['name'] ?? "Nom inconnu",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -47,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 8),
             Center(
               child: Text(
-                'Apprenant',
+                userData!['role'] ?? "Rôle non défini",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey[600],
@@ -67,8 +104,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 12),
 
-            _buildInfoTile(icon: Icons.email, label: 'Email', value: 'mvondo@example.com'),
-            _buildInfoTile(icon: Icons.phone, label: 'Téléphone', value: '+237 6 12 34 56 78'),
+            _buildInfoTile(
+                icon: Icons.email,
+                label: 'Email',
+                value: userData!['email'] ?? "Non défini"),
 
             const SizedBox(height: 24),
 
@@ -77,7 +116,8 @@ class _ProfilePageState extends State<ProfilePage> {
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blueColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 32, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -85,11 +125,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: const Icon(Icons.logout, color: Colors.white),
                 label: const Text(
                   'Se déconnecter',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style:
+                  TextStyle(color: Colors.white, fontSize: 16),
                 ),
-                onPressed: () {
-                  // TODO: action de déconnexion
-                },
+                onPressed: _logout,
               ),
             ),
           ],

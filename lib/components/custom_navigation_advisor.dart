@@ -1,8 +1,9 @@
 import 'package:edupasss/views/userscreen/advisor/announcement.dart';
+import 'package:edupasss/views/userscreen/advisor/profile_page_advisor.dart';
 import 'package:flutter/material.dart';
 import 'package:edupasss/views/userscreen/advisor/advisor_dashboard.dart';
 import 'package:edupasss/views/userscreen/advisor/courses_manage.dart';
-import 'package:edupasss/views/userscreen/advisor/profile_page.dart';
+import 'package:edupasss/views/userscreen/advisor/profile_page_advisor.dart';
 
 class CustomNavigationAdvisor extends StatefulWidget {
   const CustomNavigationAdvisor({super.key});
@@ -18,7 +19,7 @@ class _CustomNavigationAdvisorState extends State<CustomNavigationAdvisor> {
   final List<Widget> _pages = const [
     AdvisorDashboard(),
     coursesmanage(),
-    profilepage(),
+    ProfilePageAdvisor(),
     Announcement(),
   ];
 

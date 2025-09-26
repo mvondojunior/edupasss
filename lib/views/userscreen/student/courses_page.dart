@@ -17,19 +17,32 @@ class _CoursesPageState extends State<CoursesPage>
   late TabController _tabController;
   final Dio _dio = Dio();
 
-  final Map<String, List<Map<String, String>>> _coursesByCategory = {
-    "Maths": [
-      {"title": "Algèbre linéaire", "pdfUrl": "https://example.com/algebre.pdf"},
-      {"title": "Analyse", "pdfUrl": "https://example.com/analyse.pdf"},
-    ],
-    "Physique": [
-      {"title": "Mécanique classique", "pdfUrl": "https://example.com/mecanique.pdf"},
-      {"title": "Optique", "pdfUrl": "https://example.com/optique.pdf"},
-    ],
-    "Informatique": [
-      {"title": "Programmation Dart", "pdfUrl": "https://example.com/dart.pdf"},
-      {"title": "Bases de données", "pdfUrl": "https://example.com/bdd.pdf"},
-    ],
+  // 🔹 Exemple de séparation entre cours avec quiz et sans quiz
+  final Map<String, Map<String, List<Map<String, String>>>> _coursesByCategory = {
+    "Maths": {
+      "Avec Quiz": [
+        {"title": "Algèbre linéaire", "pdfUrl": "https://example.com/algebre.pdf"},
+      ],
+      "Sans Quiz": [
+        {"title": "Analyse", "pdfUrl": "https://example.com/analyse.pdf"},
+      ],
+    },
+    "Physique": {
+      "Avec Quiz": [
+        {"title": "Mécanique classique", "pdfUrl": "https://example.com/mecanique.pdf"},
+      ],
+      "Sans Quiz": [
+        {"title": "Optique", "pdfUrl": "https://example.com/optique.pdf"},
+      ],
+    },
+    "Informatique": {
+      "Avec Quiz": [
+        {"title": "Programmation Dart", "pdfUrl": "https://example.com/dart.pdf"},
+      ],
+      "Sans Quiz": [
+        {"title": "Bases de données", "pdfUrl": "https://example.com/bdd.pdf"},
+      ],
+    },
   };
 
   @override
@@ -64,7 +77,6 @@ class _CoursesPageState extends State<CoursesPage>
 
   @override
   Widget build(BuildContext context) {
-    // 🔹 Bleu royal harmonisé avec le dashboard
     final Color blueColor = const Color(0xFF365DA8);
 
     return DefaultTabController(
@@ -86,45 +98,86 @@ class _CoursesPageState extends State<CoursesPage>
         body: TabBarView(
           controller: _tabController,
           children: _coursesByCategory.keys.map((category) {
-            final courses = _coursesByCategory[category]!;
-            return ListView.builder(
+            final categoryData = _coursesByCategory[category]!;
+            return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                final course = courses[index];
-                return Card(
-                  elevation: 3,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 24,
-                      backgroundColor: blueColor.withOpacity(0.1),
-                      child: Icon(Icons.picture_as_pdf, color: blueColor),
-                    ),
-                    title: Text(
-                      course["title"]!,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: blueColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: categoryData.keys.map((rubrique) {
+                  final courses = categoryData[rubrique]!;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        rubrique,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: blueColor,
+                        ),
                       ),
-                    ),
-                    subtitle: const Text("Télécharger le cours"),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.download),
-                      color: blueColor,
-                      onPressed: () {
-                        _downloadAndOpenPdf(
-                          course["pdfUrl"]!,
-                          course["title"]!,
-                        );
-                      },
-                    ),
-                  ),
-                );
-              },
+                      const SizedBox(height: 12),
+                      Row(
+                        children: courses.map((course) {
+                          return Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.picture_as_pdf,
+                                      color: blueColor, size: 40),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    course["title"]!,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: blueColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: blueColor,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _downloadAndOpenPdf(
+                                        course["pdfUrl"]!,
+                                        course["title"]!,
+                                      );
+                                    },
+                                    icon: const Icon(Icons.download),
+                                    label: const Text("Ouvrir"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  );
+                }).toList(),
+              ),
             );
           }).toList(),
         ),

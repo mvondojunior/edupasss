@@ -1,6 +1,7 @@
 import 'package:edupasss/views/auth/login_page.dart';
 import 'package:edupasss/views/auth/register_page.dart';
 import 'package:edupasss/views/home/landing_page.dart';
+import 'package:edupasss/views/userscreen/admin/admin_dashboard.dart';
 import 'package:edupasss/views/userscreen/advisor/advisor_dashboard.dart';
 import 'package:edupasss/views/userscreen/student/chat_bot.dart';
 import 'package:edupasss/views/userscreen/student/profile_page.dart';
@@ -58,7 +59,8 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => const LoginPage(),
         '/register': (context) => RegisterPage(),
         '/student_dashboard': (context) => StudentDashboard(),
-        '/advisor_dashboard': (context) => AdvisorDashboard(),
+        '/advisor_dashboard': (context) =>  AdvisorDashboard(),
+        '/admin_dashboard': (context) => AdminDashboard(),
         '/chatbot': (context) => ChatBot(),
         // On passe toggleTheme au ProfilePage
         '/profile': (context) => ProfilePage(),

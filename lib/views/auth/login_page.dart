@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // --- Bleu royal utilisé partout ---
+
   final Color blueColor = const Color(0xFF365DA8);
 
   final _formKey = GlobalKey<FormState>();
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
           userDoc.data() as Map<String, dynamic>;
           String role = userData['role'];
 
-          if (role == 'Etudiant') {
+          if (role == 'Apprenant') {
             Navigator.pushReplacementNamed(context, '/student_dashboard');
           } else if (role == 'Formateur') {
             Navigator.pushReplacementNamed(context, '/advisor_dashboard');
