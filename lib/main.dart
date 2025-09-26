@@ -2,8 +2,13 @@ import 'package:edupasss/views/auth/login_page.dart';
 import 'package:edupasss/views/auth/register_page.dart';
 import 'package:edupasss/views/home/landing_page.dart';
 import 'package:edupasss/views/userscreen/admin/admin_dashboard.dart';
+import 'package:edupasss/views/userscreen/admin/manage_payments.dart';
+import 'package:edupasss/views/userscreen/admin/manage_users_accounts.dart';
+import 'package:edupasss/views/userscreen/admin/profile_page_admin.dart';
 import 'package:edupasss/views/userscreen/advisor/advisor_dashboard.dart';
+import 'package:edupasss/views/userscreen/advisor/announcement.dart';
 import 'package:edupasss/views/userscreen/student/chat_bot.dart';
+import 'package:edupasss/views/userscreen/student/notifications.dart';
 import 'package:edupasss/views/userscreen/student/profile_page.dart';
 import 'package:edupasss/views/userscreen/student/student_dashboard.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +67,11 @@ class _MyAppState extends State<MyApp> {
         '/advisor_dashboard': (context) =>  AdvisorDashboard(),
         '/admin_dashboard': (context) => AdminDashboard(),
         '/chatbot': (context) => ChatBot(),
-        // On passe toggleTheme au ProfilePage
+        '/profile_page_admin':(context) => ProfilePageAdmin(),
+        '/manage_users_accounts':(context) => ManageUsersAccounts(),
+        '/manage_payments':(context) => ManagePaymentsPage(),
+        '/notifications': (context) => Notifications(),
+        '/announcement': (context) => AnnouncementPage(),
         '/profile': (context) => ProfilePage(),
       },
     );

@@ -47,9 +47,9 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushReplacementNamed(context, '/student_dashboard');
           } else if (role == 'Formateur') {
             Navigator.pushReplacementNamed(context, '/advisor_dashboard');
-          } else if (role == 'Administrateur') {
-            Navigator.pushReplacementNamed(context, '/admin_dashboard');
-          }
+          } else if (role == 'Administrateur')
+           { Navigator.pushReplacementNamed(context, '/admin_dashboard');
+        }
           _showSnackBar('Connexion réussie !', success: true);
         } else {
           _showSnackBar('Utilisateur non trouvé.');

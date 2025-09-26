@@ -24,7 +24,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final List<DropdownMenuItem<String>> roleItems = const [
     DropdownMenuItem(value: 'Apprenant', child: Text('Apprenant')),
     DropdownMenuItem(value: 'Formateur', child: Text('Formateur')),
-    DropdownMenuItem(value: 'Administrateur', child: Text('Administrateur')),
   ];
 
   bool isLoading = false;

@@ -20,7 +20,7 @@ class _CustomNavigationAdvisorState extends State<CustomNavigationAdvisor> {
     AdvisorDashboard(),
     coursesmanage(),
     ProfilePageAdvisor(),
-    Announcement(),
+    AnnouncementPage(),
   ];
 
   @override

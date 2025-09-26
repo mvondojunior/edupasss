@@ -1,3 +1,4 @@
+import 'package:edupasss/views/userscreen/student/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:edupasss/views/userscreen/student/courses_page.dart';
 import 'package:edupasss/views/userscreen/student/quiz_page.dart';
@@ -25,6 +26,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
     QuizPage(),
     TutorialsPage(),
     ProfilePage(),
+    Notifications(),
   ];
 
   void switchTab(int index) {
@@ -62,6 +64,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.play_circle_fill), label: 'Tutoriels'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Notifications'),
         ],
       ),
     );

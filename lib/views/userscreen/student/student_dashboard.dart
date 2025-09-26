@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:edupasss/views/userscreen/student/chat_bot.dart';
 import 'package:edupasss/views/userscreen/student/courses_page.dart';
-import 'package:edupasss/views/userscreen/student/profile_page.dart';
 import 'package:edupasss/views/userscreen/student/quiz_page.dart';
 import 'package:edupasss/views/userscreen/student/tutorials_page.dart';
-import 'package:flutter/material.dart';
+import 'package:edupasss/views/userscreen/student/profile_page.dart';
+import 'package:edupasss/views/userscreen/student/notifications.dart';
 
 class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key});
@@ -14,20 +15,21 @@ class StudentDashboard extends StatefulWidget {
 
 class _StudentDashboardState extends State<StudentDashboard> {
   final Color blueColor = const Color(0xFF365DA8);
-
   int _currentIndex = 0;
-  final List<Widget> _pages = [];
+
+  late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-    _pages.addAll([
+    _pages = [
       _buildHomePage(),
-      CoursesPage(),
-      QuizPage(),
-      TutorialsPage(),
-      ProfilePage(),
-    ]);
+      const CoursesPage(),
+      const QuizPage(),
+      const TutorialsPage(),
+      const ProfilePage(),
+      const Notifications(), // 🔹 Page notifications
+    ];
   }
 
   @override
@@ -47,10 +49,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
         ),
       )
           : null,
-      backgroundColor: blueColor,
-      body: SafeArea(
-        child: _pages[_currentIndex],
-      ),
+      backgroundColor: Colors.white,
+      body: SafeArea(child: _pages[_currentIndex]),
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
         backgroundColor: blueColor,
@@ -72,9 +72,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Cours'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.play_circle_fill), label: 'Tutoriels'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'), // 🔹 ajout
         ],
       ),
     );
@@ -86,7 +85,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 Progression de l’apprenant
+          // Progression de l’apprenant
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -102,21 +101,20 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 ),
                 const SizedBox(height: 12),
                 LinearProgressIndicator(
-                  value: 0.6, // exemple 60%
+                  value: 0.6,
                   backgroundColor: Colors.grey[300],
                   color: blueColor,
                   minHeight: 8,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 const SizedBox(height: 8),
-                const Text("60% complété",
-                    style: TextStyle(color: Colors.grey)),
+                const Text("60% complété", style: TextStyle(color: Colors.grey)),
               ],
             ),
           ),
           const SizedBox(height: 24),
 
-          // 🔹 Row raccourcis (Cours + Tutoriels)
+          // Row raccourcis (Cours + Tutoriels)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -149,7 +147,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
           margin: const EdgeInsets.symmetric(horizontal: 8),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: blueColor,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -161,14 +159,12 @@ class _StudentDashboardState extends State<StudentDashboard> {
           ),
           child: Column(
             children: [
-              Icon(icon, color: blueColor, size: 32),
+              Icon(icon, color: Colors.white, size: 32),
               const SizedBox(height: 12),
               Text(
                 title,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: blueColor),
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ],
           ),

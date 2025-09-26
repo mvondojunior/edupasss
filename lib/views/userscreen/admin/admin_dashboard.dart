@@ -19,7 +19,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         leading: IconButton(
           icon: const Icon(Icons.person, color: Colors.white),
           onPressed: () {
-            Navigator.pushNamed(context, '/profile_page_admin'); // 🔹 Profil admin
+            Navigator.pushNamed(context, '/profile_page_admin'); // Profil admin
           },
         ),
         title: const Text(
@@ -27,13 +27,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      backgroundColor: blueColor,
+      backgroundColor: Colors.white, // Body en blanc
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
-              // 🔹 Row raccourcis
+              // Row raccourcis
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -48,7 +48,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     icon: Icons.payment,
                     title: "Gérer paiements",
                     onTap: () {
-                      Navigator.pushNamed(context, '/manage payments');
+                      Navigator.pushNamed(context, '/manage_payments');
                     },
                   ),
                 ],
@@ -75,7 +75,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           margin: const EdgeInsets.symmetric(horizontal: 8),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: blueColor, // Row en bleu
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -87,15 +87,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
           child: Column(
             children: [
-              Icon(icon, color: blueColor, size: 40),
+              Icon(icon, color: Colors.white, size: 40), // Icône en blanc
               const SizedBox(height: 12),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: blueColor,
+                  color: Colors.white, // Texte en blanc
                 ),
               ),
             ],
