@@ -10,176 +10,153 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final Color blueColor = const Color(0xFF365DA8);
+  final _formKey = GlobalKey<FormState>();
 
-  Map<String, dynamic>? userData;
-  bool isLoading = true;
+  // Controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  bool _isLoading = false;
+  final Color blueColor = const Color(0xFF365DA8);
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _loadUserData();
   }
 
-  Future<void> _fetchUserData() async {
-    try {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
-      if (uid != null) {
-        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-        if (doc.exists) {
-          setState(() {
-            userData = doc.data() as Map<String, dynamic>;
-            isLoading = false;
-          });
-        }
-      }
-    } catch (e) {
-      print("Erreur chargement profil: $e");
-      setState(() => isLoading = false);
+  Future<void> _loadUserData() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+    if (doc.exists) {
+      final data = doc.data()!;
+      setState(() {
+        _nameController.text = data['name'] ?? '';
+      });
     }
   }
 
-  Future<void> _logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(context, '/login');
+  Future<void> _updateProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Les mots de passe ne correspondent pas")),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+
+      // Mettre à jour le nom dans Firestore
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'name': _nameController.text.trim(),
+      });
+
+      // Mettre à jour le mot de passe si rempli
+      if (_passwordController.text.isNotEmpty) {
+        await FirebaseAuth.instance.currentUser!
+            .updatePassword(_passwordController.text.trim());
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Profil mis à jour avec succès")),
+      );
+
+      // Réinitialiser les champs de mot de passe
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erreur: $e")),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Profil'),
+        title: const Text("Profil Apprenant"),
         backgroundColor: blueColor,
-        foregroundColor: Colors.white,
       ),
-      body: isLoading
+      body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : userData == null
-          ? const Center(child: Text("Impossible de charger les infos"))
-          : SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 🔹 Avatar
-            Center(
-              child: CircleAvatar(
+          : Padding(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              const CircleAvatar(
                 radius: 50,
-                backgroundColor: blueColor.withOpacity(0.1),
-                child: Icon(Icons.person, size: 50, color: blueColor),
+                backgroundColor: Color(0xFF365DA8),
+                child: Icon(Icons.person, size: 50, color: Colors.white),
               ),
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: Text(
-                userData!['name'] ?? "Nom inconnu",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: blueColor,
+              const SizedBox(height: 20),
+
+              // Nom
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: "Nom",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                value!.isEmpty ? "Le nom est requis" : null,
+              ),
+              const SizedBox(height: 20),
+
+              // Nouveau mot de passe
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Nouveau mot de passe",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value != null && value.isNotEmpty && value.length < 6) {
+                    return "Le mot de passe doit contenir au moins 6 caractères";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Confirmation mot de passe
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Confirmer le mot de passe",
+                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: Text(
-                userData!['role'] ?? "Rôle non défini",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+              const SizedBox(height: 30),
+
+              ElevatedButton.icon(
+                onPressed: _updateProfile,
+                icon: const Icon(Icons.save),
+                label: const Text(
+                  "Mettre à jour",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // 🔹 Informations
-            Text(
-              'Informations personnelles',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: blueColor,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            _buildInfoTile(
-                icon: Icons.email,
-                label: 'Email',
-                value: userData!['email'] ?? "Non défini"),
-
-            const SizedBox(height: 24),
-
-            // 🔹 Bouton Déconnexion
-            Center(
-              child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blueColor,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 32, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text(
-                  'Se déconnecter',
-                  style:
-                  TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                onPressed: _logout,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoTile({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: blueColor.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: blueColor.withOpacity(0.2)),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: blueColor.withOpacity(0.1),
-            child: Icon(icon, color: blueColor, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: blueColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
+                  padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -32,7 +32,7 @@ class _AdvisorDashboardState extends State<AdvisorDashboard> {
             children: [
               // 👋 Header
               Text(
-                "Bienvenue, Formateur 👨‍🏫",
+                "Formateur",
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,

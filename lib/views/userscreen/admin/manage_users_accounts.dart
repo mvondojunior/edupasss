@@ -34,7 +34,7 @@ class _ManageUsersAccountsState extends State<ManageUsersAccounts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Gestion des utilisateurs"),
+        title: const Text("Gestion des utilisateurs",style: TextStyle(color: Colors.white,fontSize: 20),),
         backgroundColor: const Color(0xFF365DA8),
       ),
       body: StreamBuilder<QuerySnapshot>(

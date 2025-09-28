@@ -17,20 +17,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
   final Color blueColor = const Color(0xFF365DA8);
   int _currentIndex = 0;
 
-  late final List<Widget> _pages;
-
-  @override
-  void initState() {
-    super.initState();
-    _pages = [
-      _buildHomePage(),
-      const CoursesPage(),
-      const QuizPage(),
-      const TutorialsPage(),
-      const ProfilePage(),
-      const Notifications(), // 🔹 Page notifications
-    ];
-  }
+  bool _hasPaid = false; // 🔹 Simule l'état du paiement
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +31,13 @@ class _StudentDashboardState extends State<StudentDashboard> {
           onPressed: () => setState(() => _currentIndex = 4),
         ),
         title: const Text(
-          "Tableau de bord",
+          "Apprenant",
           style: TextStyle(color: Colors.white),
         ),
       )
           : null,
       backgroundColor: Colors.white,
-      body: SafeArea(child: _pages[_currentIndex]),
+      body: SafeArea(child: _buildPage(_currentIndex)),
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
         backgroundColor: blueColor,
@@ -72,13 +59,77 @@ class _StudentDashboardState extends State<StudentDashboard> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Cours'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'), // 🔹 ajout
+          BottomNavigationBarItem(icon: Icon(Icons.play_circle_fill), label: 'Tutoriels'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'),
         ],
       ),
     );
   }
 
+  // 🔹 Gestion des pages avec paywall
+  Widget _buildPage(int index) {
+    switch (index) {
+      case 0:
+        return _buildHomePage();
+      case 1:
+        return const CoursesPage();
+      case 2:
+        return const QuizPage();
+      case 3:
+        return _hasPaid
+            ? const TutorialsPage()
+            : _buildPaymentPage(); // Paywall ici
+      case 4:
+        return const ProfilePage();
+      case 5:
+        return const Notifications();
+      default:
+        return const Center(child: Text("Page introuvable"));
+    }
+  }
+
+  // 🔹 Page de paiement
+  Widget _buildPaymentPage() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock, size: 80, color: Colors.red),
+            const SizedBox(height: 20),
+            const Text(
+              "Accès aux tutoriels verrouillé",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              "Veuillez effectuer un paiement pour accéder aux tutoriels.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _hasPaid = true; // 🔹 Simulation du paiement réussi
+                  _currentIndex = 3; // Redirige vers Tutoriels
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: blueColor,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: const Text("Payer maintenant"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 🔹 Accueil avec progression et raccourcis
   Widget _buildHomePage() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -108,7 +159,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 const SizedBox(height: 8),
-                const Text("60% complété", style: TextStyle(color: Colors.grey)),
+                const Text("60% complété",
+                    style: TextStyle(color: Colors.grey)),
               ],
             ),
           ),

@@ -23,7 +23,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           },
         ),
         title: const Text(
-          "Tableau de bord Admin",
+          "Administrateur",
           style: TextStyle(color: Colors.white),
         ),
       ),

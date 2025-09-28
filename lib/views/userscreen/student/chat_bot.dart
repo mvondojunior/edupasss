@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ChatBot extends StatefulWidget {
   const ChatBot({super.key});
 
@@ -17,7 +17,8 @@ class _ChatBotState extends State<ChatBot> {
   bool _isLoading = false;
 
   // 🔐 Mets ici ta clé API Gemini
-  final String _apiKey = 'AIzaSyBSFtrAW5__2QyjnX0izWsol_QJFxjuyyU';
+  final String _apiKey ='AIzaSyCKF0aesVmMwiWrJuqfueR4tRr-x23dsFg';
+
 
   late final GenerativeModel _model;
   late final ChatSession _chat;
@@ -27,7 +28,7 @@ class _ChatBotState extends State<ChatBot> {
     super.initState();
     _model = GenerativeModel(
       // ✅ Corrigé : utilise un modèle existant
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-2.5-flash',
       apiKey: _apiKey,
     );
     _chat = _model.startChat();
