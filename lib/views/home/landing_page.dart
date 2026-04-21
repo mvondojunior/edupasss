@@ -12,7 +12,7 @@ class _LandingPageScreenState extends State<LandingPage> {
   final PageController _controller = PageController();
   int currentIndex = 0;
 
-  final Color appBlue = const Color(0xFF365DA8); // 👈 Ton bleu royal
+  final Color appBlue = const Color(0xFF365DA8);
 
   final List<Map<String, String>> onboardingData = [
     {
@@ -36,13 +36,11 @@ class _LandingPageScreenState extends State<LandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      // --- AppBar avec EDUPASS centré + bouton Passer ---
       appBar: AppBar(
         backgroundColor: appBlue,
         elevation: 4,
         centerTitle: true,
-        automaticallyImplyLeading: false, // ← supprime la flèche de retour
+        automaticallyImplyLeading: false, // supprime la flèche de retour
         title: const Text(
           "EDUPASS",
           style: TextStyle(
